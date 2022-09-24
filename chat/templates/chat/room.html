@@ -25,7 +25,7 @@
 
                 <div class="column is-6 is-offset-3">
                     <div class="box">
-                        <div id="chat-log">{% for m in messages %}<b>{{ m.username }}</b>: {{ m.content }}<br>{% endfor %}</div>
+                        <div id="chat-log" style="max-height: 300px; overflow-y:scroll">{% for m in messages %}<b>{{ m.username }}</b>: {{ m.content }}<br>{% endfor %}</div>
                     </div>
                     <div class="field">
                         <div class="control">
@@ -49,6 +49,14 @@
     {{ username|json_script:"username" }}
 
     <script>
+
+        scrollToBottom = () => {
+            let objDiv = document.getElementById("chat-log");
+            objDiv.scrollTop = objDiv.scrollHeight
+        }
+
+        scrollToBottom();
+
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
         const userName = JSON.parse(document.getElementById('username').textContent);
 
@@ -63,6 +71,7 @@
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             document.querySelector('#chat-log').innerHTML += ('<b>' + data.username + '</b>: ' + data.message + '<br>')
+            scrollToBottom();
         };
 
         chatSocket.onclose = function(e) {
